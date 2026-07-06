@@ -25,8 +25,8 @@ Latin monospace advances.
 
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
 
-**Unicode Box Drawing Example**
-![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.52.25-pm.png)
+**Ghostty Terminal**
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)
 
 ## Build
 

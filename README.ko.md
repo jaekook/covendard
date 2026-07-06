@@ -26,8 +26,9 @@ Jetendard는
 
 ![예시 스크린샷](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
 
-**유니코드 박스 드로잉 예시**
-![예시 스크린샷](assets/screeshots/screenshot-2026-07-06-at-3.52.25-pm.png)
+**Ghostty 터미널**
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)
+
 
 ## 빌드
 
