@@ -26,9 +26,11 @@ Jetendard는
 
 ![예시 스크린샷](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
 
-**Ghostty 터미널**
+**Ghostty 터미널 (텍스트 출력)**
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)
 
+**Ghostty 터미널 (Codex)**
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-10.44.13-pm.png)
 
 ## 빌드
 

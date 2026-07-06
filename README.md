@@ -25,8 +25,12 @@ Latin monospace advances.
 
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
 
-**Ghostty Terminal**
+**Ghostty Terminal (Text Output)**
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)
+
+**Ghostty Terminal (Codex)**
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-10.44.13-pm.png)
+
 
 ## Build
 
