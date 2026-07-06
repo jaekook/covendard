@@ -21,6 +21,13 @@ and Nerd Font symbols come from the ligature-enabled `JetBrainsMonoNerdFontMono`
 files. Korean and CJK glyphs come from Pretendard and are fitted into exactly two
 Latin monospace advances.
 
+- Zed Editor (font size 13.5)
+
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
+
+- Unicode Box Drawing Example
+![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.52.25-pm.png)
+
 ## Build
 
 ```bash
