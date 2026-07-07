@@ -23,8 +23,10 @@ Jetendard는
 고정폭의 정확히 두 배 폭에 맞춰집니다.
 
 **Zed 에디터 (폰트 사이즈 13.5)**
-
 ![예시 스크린샷](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
+
+**Zed 에디터 (한글 주석)**
+![screenshot](assets/screeshots/screenshot-2026-07-07-at-10.59.35-am.png)
 
 **Ghostty 터미널 (텍스트 출력)**
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)

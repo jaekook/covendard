@@ -22,8 +22,10 @@ files. Korean and CJK glyphs come from Pretendard and are fitted into exactly tw
 Latin monospace advances.
 
 **Zed Editor (font size 13.5)**
-
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
+
+**Zed Editor (Korean comments)**
+![screenshot](assets/screeshots/screenshot-2026-07-07-at-10.59.35-am.png)
 
 **Ghostty Terminal (Text Output)**
 ![screenshot](assets/screeshots/screenshot-2026-07-06-at-4.59.31-pm.png)
