@@ -19,3 +19,8 @@ fonts/specimens/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Private local session and handoff records
+/docs/*session*.md
+/docs/MIGRATION.md
+/docs/private/
