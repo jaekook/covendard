@@ -24,3 +24,7 @@ Thumbs.db
 /docs/*session*.md
 /docs/MIGRATION.md
 /docs/private/
+
+# Locally retained legacy specimens
+/assets/screeshots/
+/assets/한글 파일명.txt

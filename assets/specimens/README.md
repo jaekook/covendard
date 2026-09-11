@@ -6,7 +6,7 @@ AI 생성 이미지나 실제 에디터·터미널 캡처가 아니다.
 
 - `code.png`: 코드 본문 24 CSS px, 행간 1.8, Regular·Bold·Italic, ligatures on.
 - `spacing.png`: 동일 문장, Regular 30 CSS px, 행간 1.8, letter-spacing 0.
-  기준 폰트는 기존 Jetendard Cove Regular(균등 1.15), 비교 폰트는 Covendard
+  기준 폰트는 제작자가 결합한 CaskaydiaCove + Pretendard(균등 1.15), 비교 폰트는 Covendard
   Regular(가로 1.20·세로 1.15). 양쪽 영문 소스와 한글 advance는 같다.
 - Chromium에서 양쪽 첫 문장 advance가 모두 510 CSS px임을 검사했다.
 - PNG 가로는 2200px이며 README 표시 크기에 맞춰 축소된다. 실제 눈에 보이는
@@ -28,5 +28,4 @@ NODE_PATH=/tmp/covendard-specimens/node_modules node scripts/render_specimens.cj
   fonts/specimens/baseline/webfont/CoveBaseline-Regular.woff2
 ```
 
-최초 이미지 생성에는 기존 `../jetendard/fonts/webfont/JetendardCove-Regular.woff2`를
-비교 입력으로 사용했다. 폰트 원본은 저장소에 추가하지 않았다.
+비교 기준도 제작자가 직접 결합한 폰트이며 원본 Jetendard의 배포 변형이 아니다.

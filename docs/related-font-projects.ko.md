@@ -88,7 +88,7 @@ fallback 조합도 제안한다. 과거 합성 파일의 배율·advance 측정�
 | font-moeum | 병합·옵션 변경·즉시 미리보기 | 소개 및 공식 README 확인 |
 | 셈틀체 | 고정폭 한영 혼합을 고려한 서체 설계 | 공식 페이지와 당시 소개·댓글 확인 |
 | Monatendard | 영문 셀 폭과 한글 가로·세로 배율을 분리 | 앞선 조사에서 커밋별 수치 확인 |
-| Jetendard Cove Compact | 기존 셀과 한글 높이를 유지하며 윤곽 가로 확대 | 실제 빌드·메트릭·shaping 검증 완료 |
+| 제작자의 Compact 실험 | 기존 셀과 한글 높이를 유지하며 윤곽 가로 확대 | 실제 빌드·메트릭·shaping 검증 완료 |
 
 현재 적용한 값과 빌드 명령은 [프로젝트 README](../README.md),
 셀 정렬과 공백의 한계는 [한글 자간 조사](korean-spacing-research.ko.md)에 있다.

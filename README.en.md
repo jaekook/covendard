@@ -5,7 +5,8 @@
 CaskaydiaCove Nerd Font Mono meets Pretendard. Covendard preserves programming ligatures,
 Nerd Font icons, and one Latin cell to two Korean cells, with fuller Korean outlines.
 Its default Korean scale is **1.20 horizontally / 1.15 vertically**. This is the
-Compact configuration developed and tried in Jetendard, now a separate font family.
+spacing configuration developed and tested by Covendard’s author, building on
+Jetendard’s implementation with a new CaskaydiaCove integration.
 Italic styles use italic Latin with upright Korean.
 
 ![Covendard code specimen with Korean comments, Latin code, bold, italic and ligatures](assets/specimens/code.png)
@@ -25,7 +26,7 @@ the result became a separate font after trying the settings in everyday use.
 
 ## Korean spacing comparison
 
-![Jetendard Cove and Covendard at the same font size, line height and two-cell Korean advance](assets/specimens/spacing.png)
+![CaskaydiaCove + Pretendard at baseline scaling versus Covendard, with matching size and advance](assets/specimens/spacing.png)
 
 Both rows use Regular at 30 px with identical line height and zero letter spacing.
 Covendard widens Korean outlines while retaining their height and the two-cell advance.
@@ -81,4 +82,5 @@ from [Cascadia Code](https://github.com/microsoft/cascadia-code), patched by
 [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts). Korean/CJK comes from
 [Pretendard](https://github.com/orioncactus/pretendard).
 Original author notices and OFL terms are retained in [LICENSE](LICENSE) and `licenses/`.
-Historical research intentionally retains the names used at the time.
+The CaskaydiaCove integration and Compact spacing are additions by Covendard’s author,
+not variants supplied by upstream Jetendard.

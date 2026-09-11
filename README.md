@@ -3,7 +3,8 @@
 [English](README.en.md) · [웹사이트](https://jaekook.dev/covendard/) · [조사 기록](docs/README.md)
 
 CaskaydiaCove Nerd Font Mono의 영문과 Pretendard의 한글을 결합한 코딩 폰트입니다.
-Jetendard에서 제작하고 실사용한 Compact 설정을 독립 패밀리 **Covendard**로 옮겼습니다.
+Jetendard의 기반 구현에 CaskaydiaCove 결합과 한글 자간 조정을 직접 추가하고,
+실사용하며 다듬어 **Covendard**로 만들었습니다.
 기본 한글 배율은 **가로 1.20·세로 1.15**입니다. 한영 1:2 폭, 프로그래밍 리거처,
 Nerd Font 아이콘을 유지합니다. 이탤릭에서도 한글은 정자체입니다.
 
@@ -24,7 +25,7 @@ Covendard는 그 불편을 줄이기 위해 시작했습니다. 터미널의 한
 
 ## 한글 자간 비교
 
-![같은 크기와 행간, 한글 두 칸 폭으로 비교한 Jetendard Cove와 Covendard](assets/specimens/spacing.png)
+![같은 크기와 행간으로 비교한 CaskaydiaCove + Pretendard 기본 배율과 Covendard](assets/specimens/spacing.png)
 
 두 행 모두 Regular 30px, 같은 행간, 추가 자간 0으로 표시했습니다.
 Covendard는 글자의 높이와 두 칸 이동 폭을 유지하면서 한글 윤곽을 넓힙니다.
@@ -77,4 +78,5 @@ uv run covendard --help
 [Yeomil Mono](https://github.com/taevel02/yeomil-mono)의 기여를 유지합니다.
 영문은 Cascadia Code의 Nerd Fonts 버전, 한글/CJK는 Pretendard입니다.
 [LICENSE](LICENSE)와 `licenses/`의 저작권·OFL 고지를 함께 배포합니다.
-기존 조사 문서의 Jetendard 이름은 당시 작업을 가리키므로 보존했습니다.
+CaskaydiaCove 결합과 Compact 자간 조정은 Covendard 제작자가 추가한 작업이며,
+원본 Jetendard에서 제공하던 변형을 뜻하지 않습니다.
