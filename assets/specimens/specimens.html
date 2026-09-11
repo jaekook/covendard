@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>Covendard specimens</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#d8dbd1;color:#e5eddc;font-family:Covendard,monospace;font-synthesis:none}article{width:1100px;padding:48px 56px;overflow:hidden}h1,h2,p,pre{margin:0}header{display:flex;justify-content:space-between;align-items:center}small,.label{font-family:Arial,sans-serif;font-size:14px;letter-spacing:.08em}.muted{color:#b0bca7}.green{color:#b8dba4}.purple{color:#c6b9de}.orange{color:#e3bd90}.code{background:#20271f}.code h1{font-size:62px;line-height:1.2;letter-spacing:-.04em}.subtitle{margin:12px 0 28px;font-size:21px}.editor{border-top:1px solid #46513f;border-bottom:1px solid #46513f;padding:25px 0}.editor pre{font:24px/1.8 Covendard,monospace;font-feature-settings:"calt" 1,"liga" 1;white-space:pre}.editor b{font-weight:700}.editor i{font-style:italic}.footer{display:flex;justify-content:space-between;margin-top:24px;font-size:13px;color:#b0bca7}.compare{background:#f4f3ee;color:#252823}.compare h2{font-size:36px;line-height:1.35}.compare header{padding-bottom:25px;border-bottom:1px solid #d8dbd1}.compare .intro{font:17px/1.7 Arial,sans-serif;color:#646b60;margin:18px 0 28px}.panel{padding:24px 28px;border:1px solid #d8dbd1;background:#fff;margin-top:18px}.panel.new{background:#e6ebdf;border-color:#bdc9b4}.panel header{border:0;padding:0;margin:0 0 16px;font:14px Arial,sans-serif;color:#646b60}.samples{font:30px/1.8 Covendard,monospace;letter-spacing:0;white-space:pre}.old .samples{font-family:CoveBaseline,monospace}.compare .footer{color:#646b60;font:14px/1.8 Arial,sans-serif}.compare .note{font:17px/1.7 Covendard,monospace;margin-top:22px}.tag{font-size:12px;border:1px solid currentColor;padding:6px 10px;color:#b8dba4}
+</style>
+<article class="code" id="code">
+<header><h1>Covendard<span class="green">.</span></h1><span class="tag">COVE + PRETENDARD</span></header>
+<p class="subtitle">생각은 한글로, 표현은 코드로.</p>
+<div class="editor"><pre><span class="muted"><i>// 매일 읽고 쓰는 코드, 편안한 한글.</i></span>
+<span class="purple"><b>const</b></span> greet = (name) <span class="green">=&gt;</span> {
+  <span class="purple"><b>return</b></span> <span class="orange">`반가워요, ${name}!`</span>;
+};
+
+<span class="purple"><b>if</b></span> (font !== <span class="orange">"Covendard"</span> &amp;&amp; size &gt;= <span class="orange">14</span>) {
+  console.log(greet(<span class="orange">"개발자"</span>));
+}
+<span class="muted">0O  1Il  {} [] ()   -&gt; =&gt; != === &lt;= &gt;=</span></pre></div>
+<div class="footer"><span>Regular · Bold · Italic / 24 px / Ligatures on</span><span>Actual font rendering · Chromium</span></div>
+</article>
+<article class="compare" id="spacing">
+<header><h2>같은 셀, 조금 더 가까운 한글.</h2><small>SPACING STUDY</small></header>
+<p class="intro">Same text · 30 px · Regular · 1.8 line height · 0 letter spacing</p>
+<div class="panel old"><header><strong>Jetendard Cove — uniform scale</strong><span>Korean X 1.15 / Y 1.15</span></header><pre class="samples">생각은 한글로, 표현은 코드로.
+한글 주석과 English code 012345
+가나다라마바사 아자차카타파하</pre></div>
+<div class="panel new"><header><strong>Covendard — compact outlines</strong><span>Korean X 1.20 / Y 1.15</span></header><pre class="samples">생각은 한글로, 표현은 코드로.
+한글 주석과 English code 012345
+가나다라마바사 아자차카타파하</pre></div>
+<p class="note">글자의 높이와 한영 1:2 폭은 그대로, 한글 윤곽은 더 넓게.</p>
+<div class="footer"><span>Both rows use the same Latin source and two-cell Korean advance.<br>Wider outlines reduce side space; the overall text advance stays the same.</span><span>Actual font rendering<br>Chromium</span></div>
+</article>
+</html>

@@ -7,6 +7,17 @@ Jetendard에서 제작하고 실사용한 Compact 설정을 독립 패밀리 **C
 기본 한글 배율은 **가로 1.20·세로 1.15**입니다. 한영 1:2 폭, 프로그래밍 리거처,
 Nerd Font 아이콘을 유지합니다. 이탤릭에서도 한글은 정자체입니다.
 
+![한글 주석, 영문 코드, 굵은 글씨·이탤릭·리거처를 보여주는 Covendard 예제](assets/specimens/code.png)
+
+## 한글 자간 비교
+
+![같은 크기와 행간, 한글 두 칸 폭으로 비교한 Jetendard Cove와 Covendard](assets/specimens/spacing.png)
+
+두 행 모두 Regular 30px, 같은 행간, 추가 자간 0으로 표시했습니다.
+Covendard는 글자의 높이와 두 칸 이동 폭을 유지하면서 한글 윤곽을 넓힙니다.
+실제 폰트를 Chromium으로 렌더링한 이미지이며 에디터·터미널 캡처는 아닙니다.
+[렌더링 조건과 재현 방법](assets/specimens/README.md).
+
 ## 설치
 
 웹사이트의 `Covendard.zip`을 풀고 `ttf/`의 네 파일을 설치한 뒤 **Covendard**를 선택하세요.

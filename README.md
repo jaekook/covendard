@@ -8,6 +8,17 @@ Its default Korean scale is **1.20 horizontally / 1.15 vertically**. This is the
 Compact configuration developed and tried in Jetendard, now a separate font family.
 Italic styles use italic Latin with upright Korean.
 
+![Covendard code specimen with Korean comments, Latin code, bold, italic and ligatures](assets/specimens/code.png)
+
+## Korean spacing comparison
+
+![Jetendard Cove and Covendard at the same font size, line height and two-cell Korean advance](assets/specimens/spacing.png)
+
+Both rows use Regular at 30 px with identical line height and zero letter spacing.
+Covendard widens Korean outlines while retaining their height and the two-cell advance.
+These are actual Chromium font renderings, not editor or terminal screenshots.
+[Rendering details and reproduction](assets/specimens/README.md).
+
 ## Install
 
 Download `Covendard.zip` from the website, extract it, install the four files in `ttf/`,
