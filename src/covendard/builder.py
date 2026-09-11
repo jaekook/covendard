@@ -1,4 +1,4 @@
-"""Font merging and fitting logic for Jetendard."""
+"""Font merging and fitting logic for Covendard."""
 
 from __future__ import annotations
 
@@ -104,7 +104,7 @@ class MergeStats:
 
 @dataclass(frozen=True)
 class FontVariant:
-    """One buildable Jetendard output variant."""
+    """One buildable Covendard output variant."""
 
     weight_name: str
     css_weight: int
@@ -144,13 +144,13 @@ class LatinSource:
 
 LATIN_SOURCES = {
     "jetbrainsmono": LatinSource(
-        "JetBrainsMonoNerdFontMono", "JetBrainsMono", SUPPORTED_WEIGHTS, "Jetendard"
+        "JetBrainsMonoNerdFontMono", "JetBrainsMono", SUPPORTED_WEIGHTS, "Covendard JB"
     ),
     "caskaydiacove": LatinSource(
         "CaskaydiaCoveNerdFontMono",
         "CascadiaCode",
         ("ExtraLight", "Light", "Regular", "SemiBold", "Bold"),
-        "Jetendard Cove",
+        "Covendard",
     ),
 }
 
@@ -172,7 +172,7 @@ def new_ot_table(class_name: str) -> Any:
 
 
 def make_font_variant(
-    weight_name: str, style: str, *, latin_family: str = "jetbrainsmono"
+    weight_name: str, style: str, *, latin_family: str = "caskaydiacove"
 ) -> FontVariant:
     """Create a build variant for a supported weight/style pair."""
     source = LATIN_SOURCES[latin_family]
@@ -210,7 +210,7 @@ def make_font_variant(
 
 DEFAULT_VARIANTS = tuple(
     make_font_variant(weight_name, style)
-    for weight_name in SUPPORTED_WEIGHTS
+    for weight_name in LATIN_SOURCES["caskaydiacove"].weights
     for style in SUPPORTED_STYLES
 )
 VARIANTS_BY_SUFFIX = {variant.output_suffix: variant for variant in DEFAULT_VARIANTS}

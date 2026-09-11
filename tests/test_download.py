@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from jetendard.builder import get_source_variants
+from covendard.builder import get_source_variants
 
 
 @pytest.fixture

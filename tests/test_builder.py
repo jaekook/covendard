@@ -1,4 +1,4 @@
-"""Unit tests for Jetendard builder logic."""
+"""Unit tests for Covendard builder logic."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import pytest
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
 
-from jetendard.builder import (
+from covendard.builder import (
     DEFAULT_VARIANTS,
     calculate_fitted_transform,
     calculate_korean_target_width,
@@ -78,24 +78,18 @@ def make_style_font() -> TTFont:
 def test_default_variants_cover_full_matrix() -> None:
     suffixes = [variant.output_suffix for variant in DEFAULT_VARIANTS]
 
-    assert len(DEFAULT_VARIANTS) == 16
+    assert len(DEFAULT_VARIANTS) == 10
     assert suffixes == [
-        "Thin",
-        "ThinItalic",
         "ExtraLight",
         "ExtraLightItalic",
         "Light",
         "LightItalic",
         "Regular",
         "Italic",
-        "Medium",
-        "MediumItalic",
         "SemiBold",
         "SemiBoldItalic",
         "Bold",
         "BoldItalic",
-        "ExtraBold",
-        "ExtraBoldItalic",
     ]
 
 
@@ -104,7 +98,7 @@ def test_regular_italic_variant_uses_special_source_filename() -> None:
 
     assert variant.output_suffix == "Italic"
     assert variant.subfamily_name == "Italic"
-    assert variant.latin_filename == "JetBrainsMonoNerdFontMono-Italic.ttf"
+    assert variant.latin_filename == "CaskaydiaCoveNerdFontMono-Italic.ttf"
     assert variant.cjk_weight_name == "Regular"
     assert variant.css_weight == 400
     assert variant.is_italic is True
@@ -193,14 +187,14 @@ def test_fitted_transform_caps_unsafe_scale() -> None:
 
 def test_update_font_names_sets_required_records() -> None:
     font = make_name_font()
-    update_font_names(font, "Jetendard", "Regular")
+    update_font_names(font, "Covendard", "Regular")
 
     name_table = font["name"]
-    assert name_table.getName(1, 3, 1, 0x409).toUnicode() == "Jetendard"
+    assert name_table.getName(1, 3, 1, 0x409).toUnicode() == "Covendard"
     assert name_table.getName(2, 3, 1, 0x409).toUnicode() == "Regular"
-    assert name_table.getName(4, 3, 1, 0x409).toUnicode() == "Jetendard Regular"
-    assert name_table.getName(6, 3, 1, 0x409).toUnicode() == "Jetendard-Regular"
-    assert name_table.getName(16, 3, 1, 0x409).toUnicode() == "Jetendard"
+    assert name_table.getName(4, 3, 1, 0x409).toUnicode() == "Covendard Regular"
+    assert name_table.getName(6, 3, 1, 0x409).toUnicode() == "Covendard-Regular"
+    assert name_table.getName(16, 3, 1, 0x409).toUnicode() == "Covendard"
     assert name_table.getName(17, 3, 1, 0x409).toUnicode() == "Regular"
 
 
@@ -252,12 +246,12 @@ def test_independent_scale_rejects_invalid_values_even_for_empty_glyphs(scale) -
 
 def test_update_font_names_supports_italic_postscript_names() -> None:
     font = make_name_font()
-    update_font_names(font, "Jetendard", "Bold Italic")
+    update_font_names(font, "Covendard", "Bold Italic")
 
     name_table = font["name"]
     assert name_table.getName(2, 3, 1, 0x409).toUnicode() == "Bold Italic"
-    assert name_table.getName(4, 3, 1, 0x409).toUnicode() == "Jetendard Bold Italic"
-    assert name_table.getName(6, 3, 1, 0x409).toUnicode() == "Jetendard-BoldItalic"
+    assert name_table.getName(4, 3, 1, 0x409).toUnicode() == "Covendard Bold Italic"
+    assert name_table.getName(6, 3, 1, 0x409).toUnicode() == "Covendard-BoldItalic"
     assert name_table.getName(17, 3, 1, 0x409).toUnicode() == "Bold Italic"
 
 
@@ -301,17 +295,17 @@ def test_enforce_monospace_flags() -> None:
 
 
 def test_integration_merge_skips_without_upstream_fonts(tmp_path: Path) -> None:
-    latin_path = Path("upstream/jetbrainsmono/JetBrainsMonoNerdFontMono-Regular.ttf")
+    latin_path = Path("upstream/caskaydiacove/CaskaydiaCoveNerdFontMono-Regular.ttf")
     cjk_path = Path("upstream/pretendard/Pretendard-Regular.ttf")
     if not latin_path.exists() or not cjk_path.exists():
         pytest.skip("upstream fonts have not been downloaded")
 
-    output_path = tmp_path / "Jetendard-Regular.ttf"
+    output_path = tmp_path / "Covendard-Regular.ttf"
     stats = merge_fonts(
         latin_path=latin_path,
         cjk_path=cjk_path,
         output_path=output_path,
-        family_name="Jetendard",
+        family_name="Covendard",
         subfamily_name="Regular",
     )
 
@@ -320,7 +314,7 @@ def test_integration_merge_skips_without_upstream_fonts(tmp_path: Path) -> None:
     features = [record.FeatureTag for record in font["GSUB"].table.FeatureList.FeatureRecord]
     assert stats.copied_count > 10_000
     assert font["hmtx"].metrics[cmap[ord("가")]][0] == font["hmtx"].metrics[cmap[ord("A")]][0] * 2
-    assert font["name"].getName(1, 3, 1, 0x409).toUnicode() == "Jetendard"
+    assert font["name"].getName(1, 3, 1, 0x409).toUnicode() == "Covendard"
     assert font["post"].isFixedPitch == 1
     assert "calt" in features
     assert "ccmp" in features
@@ -329,17 +323,17 @@ def test_integration_merge_skips_without_upstream_fonts(tmp_path: Path) -> None:
 
 def test_integration_merge_italic_metadata_skips_without_upstream_fonts(tmp_path: Path) -> None:
     variant = make_font_variant("Regular", "italic")
-    latin_path = Path("upstream/jetbrainsmono") / variant.latin_filename
+    latin_path = Path("upstream/caskaydiacove") / variant.latin_filename
     cjk_path = Path("upstream/pretendard/Pretendard-Regular.ttf")
     if not latin_path.exists() or not cjk_path.exists():
         pytest.skip("upstream italic fonts have not been downloaded")
 
-    output_path = tmp_path / "Jetendard-Italic.ttf"
+    output_path = tmp_path / "Covendard-Italic.ttf"
     stats = merge_fonts(
         latin_path=latin_path,
         cjk_path=cjk_path,
         output_path=output_path,
-        family_name="Jetendard",
+        family_name="Covendard",
         subfamily_name=variant.subfamily_name,
         typographic_subfamily_name=variant.typographic_subfamily_name,
         is_italic=variant.is_italic,
@@ -352,7 +346,7 @@ def test_integration_merge_italic_metadata_skips_without_upstream_fonts(tmp_path
     assert stats.copied_count > 10_000
     assert font["hmtx"].metrics[cmap[ord("가")]][0] == font["hmtx"].metrics[cmap[ord("A")]][0] * 2
     assert font["name"].getName(2, 3, 1, 0x409).toUnicode() == "Italic"
-    assert font["name"].getName(6, 3, 1, 0x409).toUnicode() == "Jetendard-Italic"
+    assert font["name"].getName(6, 3, 1, 0x409).toUnicode() == "Covendard-Italic"
     assert font["head"].macStyle & (1 << 1)
     assert font["OS/2"].fsSelection & (1 << 0)
     assert "calt" in features
@@ -361,12 +355,12 @@ def test_integration_merge_italic_metadata_skips_without_upstream_fonts(tmp_path
 
 
 def test_full_matrix_integration_when_enabled(tmp_path: Path) -> None:
-    if os.environ.get("JETENDARD_RUN_FULL_INTEGRATION") != "1":
-        pytest.skip("set JETENDARD_RUN_FULL_INTEGRATION=1 to build the full variant matrix")
+    if os.environ.get("COVENDARD_RUN_FULL_INTEGRATION") != "1":
+        pytest.skip("set COVENDARD_RUN_FULL_INTEGRATION=1 to build the full variant matrix")
 
     missing_sources: list[Path] = []
     for variant in DEFAULT_VARIANTS:
-        latin_path = Path("upstream/jetbrainsmono") / variant.latin_filename
+        latin_path = Path("upstream/caskaydiacove") / variant.latin_filename
         cjk_path = Path("upstream/pretendard") / f"Pretendard-{variant.cjk_weight_name}.ttf"
         if not latin_path.exists():
             missing_sources.append(latin_path)
@@ -377,14 +371,14 @@ def test_full_matrix_integration_when_enabled(tmp_path: Path) -> None:
         pytest.skip(f"upstream fonts missing: {preview}")
 
     for variant in DEFAULT_VARIANTS:
-        latin_path = Path("upstream/jetbrainsmono") / variant.latin_filename
+        latin_path = Path("upstream/caskaydiacove") / variant.latin_filename
         cjk_path = Path("upstream/pretendard") / f"Pretendard-{variant.cjk_weight_name}.ttf"
-        output_path = tmp_path / f"Jetendard-{variant.output_suffix}.ttf"
+        output_path = tmp_path / f"Covendard-{variant.output_suffix}.ttf"
         merge_fonts(
             latin_path=latin_path,
             cjk_path=cjk_path,
             output_path=output_path,
-            family_name="Jetendard",
+            family_name="Covendard",
             subfamily_name=variant.subfamily_name,
             typographic_subfamily_name=variant.typographic_subfamily_name,
             is_italic=variant.is_italic,

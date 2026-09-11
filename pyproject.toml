@@ -1,7 +1,7 @@
 [project]
-name = "jetendard"
+name = "covendard"
 version = "0.1.0"
-description = "Build Jetendard, a JetBrainsMono Nerd Font Mono and Pretendard Korean monospace font."
+description = "Build Covendard, a CaskaydiaCove Nerd Font Mono and Pretendard Korean monospace font."
 readme = "README.md"
 authors = [
     { name = "Jung Woong Park" }
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jetendard = "jetendard:main"
+covendard = "covendard:main"
 
 [build-system]
 requires = ["uv_build>=0.11.19,<0.12.0"]

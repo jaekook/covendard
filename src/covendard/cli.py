@@ -1,4 +1,4 @@
-"""Command-line interface for Jetendard."""
+"""Command-line interface for Covendard."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from fontTools.ttLib import TTFont
 
-from jetendard.builder import (
+from covendard.builder import (
     DEFAULT_KOREAN_SCALE,
     LATIN_SOURCES,
     SUPPORTED_STYLES,
@@ -56,18 +56,18 @@ def write_css(output_web_dir: Path, family_name: str, variants: list[FontVariant
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build the Jetendard CLI parser."""
+    """Build the Covendard CLI parser."""
     parser = argparse.ArgumentParser(
         description=(
-            "Build Jetendard from a supported ligature-enabled Nerd Font Mono "
+            "Build Covendard from a supported ligature-enabled Nerd Font Mono "
             "and Pretendard Korean glyphs."
         )
     )
     parser.add_argument(
         "--latin-family",
         choices=tuple(LATIN_SOURCES),
-        default="jetbrainsmono",
-        help="Latin source family (default: jetbrainsmono).",
+        default="caskaydiacove",
+        help="Latin source family (default: caskaydiacove).",
     )
     parser.add_argument(
         "--latin-dir",
@@ -87,17 +87,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--family-name",
         default=None,
-        help="Generated font family name (default: Jetendard or Jetendard Cove).",
+        help="Generated font family name (default: Covendard or Covendard JB).",
     )
     parser.add_argument(
         "--korean-scale",
         "--scale",
         dest="korean_scale",
         type=float,
-        default=DEFAULT_KOREAN_SCALE,
+        default=None,
         help=(
             "Visual scale factor for Korean/CJK glyphs after UPM normalization "
-            f"(default: {DEFAULT_KOREAN_SCALE})."
+            "(without scale options: horizontal 1.20, vertical 1.15)."
         ),
     )
     parser.add_argument(
@@ -187,7 +187,7 @@ def validate_styles(styles: list[str]) -> list[str]:
 
 def select_variants(
     *,
-    latin_family: str = "jetbrainsmono",
+    latin_family: str = "caskaydiacove",
     all_variants: bool = False,
     variant_names: list[str] | None = None,
     weights: list[str] | None = None,
@@ -228,7 +228,7 @@ def select_variants(
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Run the Jetendard build."""
+    """Run the Covendard build."""
     parser = build_parser()
     args = parser.parse_args(argv)
 
@@ -245,6 +245,12 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         parser.error(str(exc))
 
+    if args.korean_scale is None and args.korean_scale_x is None and args.korean_scale_y is None:
+        args.korean_scale_x = 1.20
+        args.korean_scale_y = 1.15
+    if args.korean_scale is None:
+        args.korean_scale = DEFAULT_KOREAN_SCALE
+
     latin_dir = Path(args.latin_dir or f"upstream/{args.latin_family}")
     family_name = args.family_name or LATIN_SOURCES[args.latin_family].family_name
     cjk_dir = Path(args.cjk_dir)
@@ -259,7 +265,7 @@ def main(argv: list[str] | None = None) -> int:
 
     stem = family_file_stem(family_name)
     logger.info(
-        "Starting Jetendard build for variants: %s",
+        "Starting Covendard build for variants: %s",
         ", ".join(variant.output_suffix for variant in variants),
     )
 
@@ -318,7 +324,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
     write_css(web_dir, family_name, variants)
-    logger.info("All requested Jetendard variants built successfully")
+    logger.info("All requested Covendard variants built successfully")
     return 0
 
 

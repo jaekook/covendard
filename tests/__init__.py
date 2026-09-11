@@ -1,1 +1,1 @@
-"""Tests for Jetendard."""
+"""Tests for Covendard."""

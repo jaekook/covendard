@@ -1,7 +1,3 @@
-Covendard is derived from Jetendard, Cascadia Code (Nerd Fonts), and Pretendard.
-Copyright (c) 2026 Jaekook Ahn (Covendard modifications).
-Upstream copyright and license notices are preserved in licenses/.
-
 Copyright (c) 2026 Jung Woong Park
 with Reserved Font Name "Jetendard".
 

@@ -1,6 +1,6 @@
 .PHONY: dev lint format test build download ensure-upstream run run-all run-minimal clean
 
-LATIN_FAMILY ?= jetbrainsmono
+LATIN_FAMILY ?= caskaydiacove
 
 dev:
 	uv sync --all-groups
@@ -25,13 +25,13 @@ ensure-upstream:
 	uv run python download_upstream.py --latin-family $(LATIN_FAMILY) --ensure
 
 run: ensure-upstream
-	uv run jetendard --latin-family $(LATIN_FAMILY) --all
+	uv run covendard --latin-family $(LATIN_FAMILY) --variants Regular Italic Bold BoldItalic
 
 run-all: ensure-upstream
-	uv run jetendard --latin-family $(LATIN_FAMILY) --all
+	uv run covendard --latin-family $(LATIN_FAMILY) --all
 
 run-minimal: ensure-upstream
-	uv run jetendard --latin-family $(LATIN_FAMILY) --variants Regular Light Bold
+	uv run covendard --latin-family $(LATIN_FAMILY) --variants Regular Light Bold
 
 clean:
 	rm -rf fonts/ttf fonts/otf fonts/webfont fonts/specimens

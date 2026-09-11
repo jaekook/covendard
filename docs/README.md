@@ -1,3 +1,10 @@
+# Covendard 조사·작업 기록
+
+- [Covendard 이전과 배포](MIGRATION.md)
+
+아래는 이전 프로젝트 Jetendard에서 진행한 당시 기록입니다. 과거 파일 링크·명령은
+원본 `jaekook/jetendard` 저장소와 작업 공간을 기준으로 하며, 현재 빌드는 최상위 README를 따르세요.
+
 # 프로젝트 조사·작업 기록
 
 - [2026-09-11 논의와 구현 전체 기록](2026-09-11-session.ko.md): 프로젝트 분석,

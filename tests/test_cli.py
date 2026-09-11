@@ -1,11 +1,11 @@
-"""Tests for the Jetendard CLI helpers."""
+"""Tests for the Covendard CLI helpers."""
 
 from __future__ import annotations
 
 import pytest
 
-from jetendard.builder import DEFAULT_VARIANTS, get_variants_by_names
-from jetendard.cli import (
+from covendard.builder import DEFAULT_VARIANTS, get_variants_by_names
+from covendard.cli import (
     family_file_stem,
     select_variants,
     validate_styles,
@@ -15,7 +15,7 @@ from jetendard.cli import (
 
 
 def test_family_file_stem_removes_spaces() -> None:
-    assert family_file_stem("Jetendard Mono") == "JetendardMono"
+    assert family_file_stem("Covendard Mono") == "CovendardMono"
 
 
 def test_validate_weights_accepts_supported_weights() -> None:
@@ -118,15 +118,15 @@ def test_caskaydiacove_explicit_variants_preserve_order_and_dedupe() -> None:
 
 def test_write_css_generates_font_face_rules(tmp_path) -> None:
     variants = get_variants_by_names(["Regular", "Italic", "BoldItalic"])
-    css_path = write_css(tmp_path, "Jetendard", variants)
+    css_path = write_css(tmp_path, "Covendard", variants)
     content = css_path.read_text(encoding="utf-8")
 
-    assert css_path.name == "jetendard.css"
-    assert "font-family: 'Jetendard';" in content
-    assert "Jetendard-Regular.woff2" in content
+    assert css_path.name == "covendard.css"
+    assert "font-family: 'Covendard';" in content
+    assert "Covendard-Regular.woff2" in content
     assert "font-weight: 400;" in content
     assert "font-style: normal;" in content
-    assert "Jetendard-Italic.woff2" in content
+    assert "Covendard-Italic.woff2" in content
     assert "font-style: italic;" in content
-    assert "Jetendard-BoldItalic.woff2" in content
+    assert "Covendard-BoldItalic.woff2" in content
     assert "font-weight: 700;" in content

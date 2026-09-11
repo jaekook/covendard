@@ -1,4 +1,4 @@
-"""Download and extract upstream font files for Jetendard."""
+"""Download and extract upstream font files for Covendard."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from jetendard.builder import LATIN_SOURCES, get_source_variants  # noqa: E402
+from covendard.builder import LATIN_SOURCES, get_source_variants  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ def download_file(url: str, output_path: Path) -> None:
 
     tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
     logger.info("Downloading %s", url)
-    request = urllib.request.Request(url, headers={"User-Agent": "Jetendard builder"})
+    request = urllib.request.Request(url, headers={"User-Agent": "Covendard builder"})
     try:
         with (
             urllib.request.urlopen(request, timeout=120) as response,
@@ -62,7 +62,7 @@ def download_file(url: str, output_path: Path) -> None:
                 "--connect-timeout",
                 "30",
                 "-A",
-                "Jetendard builder",
+                "Covendard builder",
                 "-o",
                 str(tmp_path),
                 url,
@@ -123,7 +123,7 @@ def write_sources_note(latin_family: str) -> None:
     pretendard_files = [f"Pretendard-{weight}.ttf" for weight in source.weights]
     note = "\n".join(
         [
-            "# Jetendard Upstream Sources",
+            "# Covendard Upstream Sources",
             "",
             f"- Nerd Fonts {source.archive_name}: {NERD_FONTS_VERSION}",
             f"- Pretendard: {PRETENDARD_VERSION}",
@@ -148,7 +148,7 @@ def write_sources_note(latin_family: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     """Download a supported Nerd Font Mono family and matching Pretendard files."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--latin-family", choices=tuple(LATIN_SOURCES), default="jetbrainsmono")
+    parser.add_argument("--latin-family", choices=tuple(LATIN_SOURCES), default="caskaydiacove")
     parser.add_argument(
         "--ensure", action="store_true", help="Skip if required fonts already exist."
     )
