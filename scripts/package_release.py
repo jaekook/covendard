@@ -22,7 +22,7 @@ def main() -> None:
             name = f"Covendard-{style}.{extension}"
             entries[f"{folder}/{name}"] = ROOT / "fonts" / folder / name
     entries["webfont/covendard.css"] = ROOT / "fonts/webfont/covendard.css"
-    entries.update({name: ROOT / name for name in ("LICENSE", "README.md", "README.ko.md")})
+    entries.update({name: ROOT / name for name in ("LICENSE", "README.md", "README.en.md")})
     entries.update({f"licenses/{path.name}": path for path in (ROOT / "licenses").glob("*.txt")})
     for path in entries.values():
         if not path.is_file():
