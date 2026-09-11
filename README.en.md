@@ -76,7 +76,7 @@ copy release assets to the site using `--site-dir ../cloudflare-pages/public/cov
 
 ## Credits and license
 
-Derived from [Jetendard](https://github.com/jaekook/jetendard), which credits
+Derived from [Jetendard](https://github.com/kuskhan/jetendard), which credits
 [Yeomil Mono](https://github.com/taevel02/yeomil-mono). Latin glyphs and ligatures come
 from [Cascadia Code](https://github.com/microsoft/cascadia-code), patched by
 [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts). Korean/CJK comes from

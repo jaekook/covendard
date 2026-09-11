@@ -74,7 +74,7 @@ uv run covendard --help
 
 ## 출처
 
-[Jetendard](https://github.com/jaekook/jetendard)에서 파생되었으며, 기존 프로젝트가 참고한
+[Jetendard](https://github.com/kuskhan/jetendard)에서 파생되었으며, 기존 프로젝트가 참고한
 [Yeomil Mono](https://github.com/taevel02/yeomil-mono)의 기여를 유지합니다.
 영문은 Cascadia Code의 Nerd Fonts 버전, 한글/CJK는 Pretendard입니다.
 [LICENSE](LICENSE)와 `licenses/`의 저작권·OFL 고지를 함께 배포합니다.
