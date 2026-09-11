@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -87,6 +88,7 @@ class FittedGlyphTransform:
     left_side_bearing: int
     capped: bool
     transformed_bounds: Bounds | None
+    scale_y: float
 
 
 @dataclass(frozen=True)
@@ -130,16 +132,52 @@ DEFAULT_WEIGHTS = SUPPORTED_WEIGHTS
 SUPPORTED_STYLES = ("normal", "italic")
 
 
+@dataclass(frozen=True)
+class LatinSource:
+    """A supported Nerd Fonts source and its matching Pretendard weights."""
+
+    prefix: str
+    archive_name: str
+    weights: tuple[str, ...]
+    family_name: str
+
+
+LATIN_SOURCES = {
+    "jetbrainsmono": LatinSource(
+        "JetBrainsMonoNerdFontMono", "JetBrainsMono", SUPPORTED_WEIGHTS, "Jetendard"
+    ),
+    "caskaydiacove": LatinSource(
+        "CaskaydiaCoveNerdFontMono",
+        "CascadiaCode",
+        ("ExtraLight", "Light", "Regular", "SemiBold", "Bold"),
+        "Jetendard Cove",
+    ),
+}
+
+
+def get_source_variants(latin_family: str) -> list[FontVariant]:
+    """Return variants with same-weight Pretendard sources for a Latin family."""
+    source = LATIN_SOURCES[latin_family]
+    return [
+        make_font_variant(weight, style, latin_family=latin_family)
+        for weight in source.weights
+        for style in SUPPORTED_STYLES
+    ]
+
+
 def new_ot_table(class_name: str) -> Any:
     """Create a fontTools OpenType table class generated at import time."""
     table_class = getattr(cast("Any", otTables), class_name)
     return table_class()
 
 
-def make_font_variant(weight_name: str, style: str) -> FontVariant:
+def make_font_variant(
+    weight_name: str, style: str, *, latin_family: str = "jetbrainsmono"
+) -> FontVariant:
     """Create a build variant for a supported weight/style pair."""
-    if weight_name not in WEIGHT_TO_CSS:
-        supported = ", ".join(SUPPORTED_WEIGHTS)
+    source = LATIN_SOURCES[latin_family]
+    if weight_name not in source.weights:
+        supported = ", ".join(source.weights)
         msg = f"Unsupported weight {weight_name!r}. Supported: {supported}"
         raise ValueError(msg)
     if style not in SUPPORTED_STYLES:
@@ -161,7 +199,7 @@ def make_font_variant(weight_name: str, style: str) -> FontVariant:
         weight_name=weight_name,
         css_weight=WEIGHT_TO_CSS[weight_name],
         style=style,
-        latin_filename=f"JetBrainsMonoNerdFontMono-{latin_suffix}.ttf",
+        latin_filename=f"{source.prefix}-{latin_suffix}.ttf",
         cjk_weight_name=weight_name,
         output_suffix=output_suffix,
         subfamily_name=subfamily_name,
@@ -303,10 +341,13 @@ def calculate_fitted_transform(
     safe_ymax: int,
     side_bearing_guard: int,
     vertical_guard: int = 0,
+    requested_scale_y: float | None = None,
 ) -> FittedGlyphTransform:
-    """Calculate a scale and horizontal shift that avoids clipping."""
-    if requested_scale <= 0:
-        msg = f"Scale must be positive, got {requested_scale}"
+    """Fit uniformly unless an independent vertical scale is supplied."""
+    independent_axes = requested_scale_y is not None
+    requested_y = requested_scale if requested_scale_y is None else requested_scale_y
+    if any(not math.isfinite(value) or value <= 0 for value in (requested_scale, requested_y)):
+        msg = f"Scales must be finite and positive, got {requested_scale}, {requested_y}"
         raise ValueError(msg)
     if bounds is None:
         return FittedGlyphTransform(
@@ -315,6 +356,7 @@ def calculate_fitted_transform(
             left_side_bearing=0,
             capped=False,
             transformed_bounds=None,
+            scale_y=requested_y,
         )
 
     xmin, ymin, xmax, ymax = bounds
@@ -325,12 +367,16 @@ def calculate_fitted_transform(
     if source_width > 0 and horizontal_limit > 0:
         scale = min(scale, horizontal_limit / source_width)
 
+    scale_y = requested_y
     if ymax > 0:
-        scale = min(scale, (safe_ymax - vertical_guard) / ymax)
+        scale_y = min(scale_y, (safe_ymax - vertical_guard) / ymax)
     if ymin < 0 and safe_ymin + vertical_guard < 0:
-        scale = min(scale, (safe_ymin + vertical_guard) / ymin)
+        scale_y = min(scale_y, (safe_ymin + vertical_guard) / ymin)
 
-    if scale <= 0:
+    if not independent_axes:
+        scale = scale_y = min(scale, scale_y)
+
+    if scale <= 0 or scale_y <= 0:
         msg = f"Could not fit glyph bounds {bounds} into target width {target_width}"
         raise ValueError(msg)
 
@@ -340,11 +386,11 @@ def calculate_fitted_transform(
     shift_x = (target_width / 2) - current_center
     transformed_bounds = (
         scaled_xmin + shift_x,
-        ymin * scale,
+        ymin * scale_y,
         scaled_xmax + shift_x,
-        ymax * scale,
+        ymax * scale_y,
     )
-    capped = scale < requested_scale - 0.000001
+    capped = scale < requested_scale - 0.000001 or scale_y < requested_y - 0.000001
 
     return FittedGlyphTransform(
         scale=scale,
@@ -352,6 +398,7 @@ def calculate_fitted_transform(
         left_side_bearing=round(transformed_bounds[0]),
         capped=capped,
         transformed_bounds=transformed_bounds,
+        scale_y=scale_y,
     )
 
 
@@ -607,6 +654,8 @@ def merge_fonts(
     subfamily_name: str,
     korean_scale: float = DEFAULT_KOREAN_SCALE,
     *,
+    korean_scale_x: float | None = None,
+    korean_scale_y: float | None = None,
     typographic_subfamily_name: str | None = None,
     is_italic: bool = False,
     css_weight: int | None = None,
@@ -619,7 +668,11 @@ def merge_fonts(
     latin_head = cast("Any", latin_font["head"])
     cjk_head = cast("Any", cjk_font["head"])
     upm_scale = latin_head.unitsPerEm / cjk_head.unitsPerEm
-    requested_total_scale = upm_scale * korean_scale
+    independent_axes = korean_scale_x is not None or korean_scale_y is not None
+    requested_total_scale = upm_scale * (korean_scale if korean_scale_x is None else korean_scale_x)
+    requested_total_scale_y = upm_scale * (
+        korean_scale if korean_scale_y is None else korean_scale_y
+    )
 
     latin_advance = derive_latin_advance(latin_font)
     korean_advance = calculate_korean_target_width(latin_advance)
@@ -634,9 +687,11 @@ def merge_fonts(
         korean_advance,
     )
     logger.info(
-        "Korean fitting: korean_scale=%.4f, total_scale=%.6f, side_guard=%d, y_bounds=(%d,%d)",
-        korean_scale,
+        "Korean fitting: total_scale_x=%.6f, total_scale_y=%.6f, independent_axes=%s, "
+        "side_guard=%d, y_bounds=(%d,%d)",
         requested_total_scale,
+        requested_total_scale_y,
+        independent_axes,
         side_guard,
         safe_ymin,
         safe_ymax,
@@ -668,6 +723,7 @@ def merge_fonts(
             bounds,
             target_width=korean_advance,
             requested_scale=requested_total_scale,
+            requested_scale_y=requested_total_scale_y if independent_axes else None,
             safe_ymin=safe_ymin,
             safe_ymax=safe_ymax,
             side_bearing_guard=side_guard,
@@ -682,7 +738,7 @@ def merge_fonts(
         glyph_pen = TTGlyphPen(None)
         transform_pen = TransformPen(
             glyph_pen,
-            (fitted.scale, 0, 0, fitted.scale, fitted.shift_x, 0),
+            (fitted.scale, 0, 0, fitted.scale_y, fitted.shift_x, 0),
         )
         decomposed_pen.replay(transform_pen)
 

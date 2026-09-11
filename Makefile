@@ -1,5 +1,7 @@
 .PHONY: dev lint format test build download ensure-upstream run run-all run-minimal clean
 
+LATIN_FAMILY ?= jetbrainsmono
+
 dev:
 	uv sync --all-groups
 
@@ -17,22 +19,19 @@ build:
 	uv build
 
 download:
-	uv run python download_upstream.py
+	uv run python download_upstream.py --latin-family $(LATIN_FAMILY)
 
 ensure-upstream:
-	@if [ ! -d "upstream/jetbrainsmono" ] || [ ! -d "upstream/pretendard" ]; then \
-		echo "Upstream font resources not found. Downloading..."; \
-		$(MAKE) download; \
-	fi
+	uv run python download_upstream.py --latin-family $(LATIN_FAMILY) --ensure
 
 run: ensure-upstream
-	uv run jetendard --all
+	uv run jetendard --latin-family $(LATIN_FAMILY) --all
 
 run-all: ensure-upstream
-	uv run jetendard --all
+	uv run jetendard --latin-family $(LATIN_FAMILY) --all
 
 run-minimal: ensure-upstream
-	uv run jetendard --variants Regular Light Bold
+	uv run jetendard --latin-family $(LATIN_FAMILY) --variants Regular Light Bold
 
 clean:
 	rm -rf fonts/ttf fonts/otf fonts/webfont fonts/specimens

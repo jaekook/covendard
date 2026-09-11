@@ -2,6 +2,8 @@
 
 [English](README.md)
 
+[프로젝트 조사·작업 기록](docs/README.md)
+
 이 프로젝트는 [Yeomil Mono](https://github.com/taevel02/yeomil-mono)에 큰
 영향을 받았으며, 구현의 상당 부분을 최소한의 변경만 거쳐 재사용합니다.
 [Yeomil Mono](https://github.com/taevel02/yeomil-mono)와 비교했을 때
@@ -21,6 +23,9 @@ Jetendard는
 리거처, Nerd Font 심볼은 리거처가 활성화된 `JetBrainsMonoNerdFontMono`
 파일에서 가져옵니다. 한글 및 CJK 글리프는 Pretendard에서 가져오며, 라틴 문자
 고정폭의 정확히 두 배 폭에 맞춰집니다.
+
+영문 소스로 CaskaydiaCove Nerd Font Mono도 지원하며, 이 경우 생성되는 폰트
+패밀리 이름은 `Jetendard Cove`입니다. 두 소스 모두 프로그래밍 리거처를 지원합니다.
 
 **Zed 에디터 (폰트 사이즈 13.5)**
 ![예시 스크린샷](assets/screeshots/screenshot-2026-07-06-at-3.38.07-pm.png)
@@ -54,7 +59,42 @@ make test
 
 생성 결과물과 업스트림 다운로드 파일은 의도적으로 git에서 무시됩니다.
 
+### CaskaydiaCove 빌드
+
+Regular, Italic, Bold, BoldItalic 네 변형을 빌드하려면 다음을 실행하세요.
+
+```bash
+make download LATIN_FAMILY=caskaydiacove
+uv run jetendard --latin-family caskaydiacove --variants Regular Italic Bold BoldItalic
+```
+
+기존 출력 디렉터리에 `JetendardCove-*.ttf`, `JetendardCove-*.otf`,
+`JetendardCove-*.woff2`, `jetendardcove.css`가 생성됩니다. 설치한 뒤 에디터나
+터미널에서 **Jetendard Cove**를 선택하세요. `--family-name`으로 출력 폰트명을
+변경할 수 있습니다. 한글은 기본 배율 `1.15`의 정자체를 사용하며, 폭은 영문
+두 칸으로 유지됩니다.
+
+`make run LATIN_FAMILY=caskaydiacove`는 ExtraLight, Light, Regular, SemiBold,
+Bold의 정자체·이탤릭체 총 10개 변형을 빌드합니다. 원본의 SemiLight는 같은
+이름의 Pretendard 정적 폰트가 없어 제외합니다. Thin, Medium, ExtraBold는
+해당 영문 소스에 없습니다. 지원하지 않는 선택은 출력 생성 전에 오류로 처리합니다.
+Nerd Fonts v3.4.0의 CascadiaCode 아카이브에서 `upstream/caskaydiacove`로
+추출하며, 출처 기록은 `upstream/SOURCES-caskaydiacove.md`에 저장합니다.
+
 ## CLI
+
+한글 두 칸 폭과 영문을 유지하면서 한글의 가로 모양만 확대한 비교용 Regular:
+
+```bash
+uv run jetendard --latin-family caskaydiacove --variants Regular \
+  --family-name "Jetendard Cove Compact" --korean-scale-x 1.20 --korean-scale-y 1.15
+```
+
+`fonts/ttf/JetendardCoveCompact-Regular.ttf`를 설치한 뒤 **Jetendard Cove Compact**를
+선택하세요. 축별 옵션 중 하나라도 지정하면 가로·세로 크기 제한을 독립적으로
+적용합니다. 생략한 축은 `--korean-scale` 값(기본 `1.15`)을 사용합니다.
+축별 옵션을 지정하지 않으면 기존 균등 배율·비율 유지 방식으로 맞춥니다.
+글자 모양을 넓혀 여백을 줄이는 방식이므로 문장 자체의 이동 폭은 같습니다.
 
 ```bash
 uv run jetendard --help
@@ -62,15 +102,17 @@ uv run jetendard --help
 
 주요 옵션:
 
-- `--latin-dir`: `JetBrainsMonoNerdFontMono-*.ttf`가 들어 있는 디렉터리
+- `--latin-family`: `jetbrainsmono`(기본값) 또는 `caskaydiacove`
+- `--latin-dir`: 소스 디렉터리 변경. 기본값은 `upstream/<latin-family>`
 - `--cjk-dir`: `Pretendard-*.ttf`가 들어 있는 디렉터리
-- `--all`: 전체 16개 변형 매트릭스 빌드
+- `--all`: 선택한 소스의 전체 변형 빌드(JetBrains Mono 16개, CaskaydiaCove 10개)
 - `--variants`: `Regular`, `Italic`, `BoldItalic`처럼 출력 변형을 명시
 - `--weights`: 빌드할 굵기. `--styles`가 없으면 upright 변형을 선택
 - `--styles`: `normal`, `italic`, 또는 둘 다
 - `--korean-italic-mode`: italic 변형에서 한글/CJK를 처리하는 정책. 현재는 `upright`
 - `--korean-scale`: 한글/CJK 글리프 맞춤에 사용할 시각적 배율
 - `--scale`: `--korean-scale`의 호환성 별칭
+- `--korean-scale-x`, `--korean-scale-y`: 가로·세로 배율을 각각 지정
 
 기본 한글 배율은 `1.15`입니다.
 
@@ -105,11 +147,14 @@ CSS에서는 해당 변형을 여전히 italic으로 식별합니다.
 
 ## 범위
 
-Jetendard는 `JetBrainsMonoNerdFontMono`만 사용합니다.
+기본 소스는 `JetBrainsMonoNerdFontMono`입니다.
 `JetBrainsMonoNerdFont`, `JetBrainsMonoNerdFontPropo`, 또는 리거처가 없는
 `JetBrainsMonoNL` 변형은 사용하지 않습니다. 기본 폰트가 이미 Nerd Font 패치가
 적용된 상태이므로, 이 프로젝트는 두 번째 Nerd Fonts 패치 단계를 실행하지
 않습니다.
+
+대체 소스는 `CaskaydiaCoveNerdFontMono`입니다. 리거처가 없는 `CaskaydiaMono`
+패밀리나 Propo 변형은 사용하지 않습니다.
 
 `Pretendard-Black`은 기본으로 빌드되지 않습니다. 확인된
 `JetBrainsMonoNerdFontMono` 아카이브에 대응되는 Black 소스가 없기 때문입니다.

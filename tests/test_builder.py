@@ -204,6 +204,52 @@ def test_update_font_names_sets_required_records() -> None:
     assert name_table.getName(17, 3, 1, 0x409).toUnicode() == "Regular"
 
 
+def test_independent_vertical_cap_preserves_horizontal_enlargement() -> None:
+    fitted = calculate_fitted_transform(
+        (84, -162, 1736, 1616),
+        target_width=2400,
+        requested_scale=1.20,
+        requested_scale_y=1.25,
+        safe_ymin=-480,
+        safe_ymax=1900,
+        side_bearing_guard=24,
+    )
+    assert fitted.scale == pytest.approx(1.20)
+    assert fitted.scale_y == pytest.approx(1900 / 1616)
+    assert fitted.capped
+    assert fitted.transformed_bounds[3] == pytest.approx(1900)
+    assert fitted.transformed_bounds[2] - fitted.transformed_bounds[0] == pytest.approx(1652 * 1.20)
+
+
+def test_independent_horizontal_cap_preserves_vertical_scale() -> None:
+    fitted = calculate_fitted_transform(
+        (0, -100, 1000, 800),
+        target_width=1200,
+        requested_scale=1.30,
+        requested_scale_y=1.10,
+        safe_ymin=-300,
+        safe_ymax=1000,
+        side_bearing_guard=20,
+    )
+    assert fitted.scale == pytest.approx(1.16)
+    assert fitted.scale_y == pytest.approx(1.10)
+    assert fitted.capped
+
+
+@pytest.mark.parametrize("scale", [0, -1, float("nan"), float("inf")])
+def test_independent_scale_rejects_invalid_values_even_for_empty_glyphs(scale) -> None:
+    with pytest.raises(ValueError, match="finite and positive"):
+        calculate_fitted_transform(
+            None,
+            target_width=2400,
+            requested_scale=1.2,
+            requested_scale_y=scale,
+            safe_ymin=-480,
+            safe_ymax=1900,
+            side_bearing_guard=24,
+        )
+
+
 def test_update_font_names_supports_italic_postscript_names() -> None:
     font = make_name_font()
     update_font_names(font, "Jetendard", "Bold Italic")

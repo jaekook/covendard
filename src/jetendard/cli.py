@@ -11,13 +11,12 @@ from fontTools.ttLib import TTFont
 
 from jetendard.builder import (
     DEFAULT_KOREAN_SCALE,
-    DEFAULT_VARIANTS,
-    DEFAULT_WEIGHTS,
+    LATIN_SOURCES,
     SUPPORTED_STYLES,
     SUPPORTED_WEIGHTS,
     FontVariant,
-    get_variants_by_names,
-    get_variants_by_weights_and_styles,
+    get_source_variants,
+    make_font_variant,
     merge_fonts,
 )
 
@@ -60,14 +59,20 @@ def build_parser() -> argparse.ArgumentParser:
     """Build the Jetendard CLI parser."""
     parser = argparse.ArgumentParser(
         description=(
-            "Build Jetendard from ligature-enabled JetBrainsMono Nerd Font Mono "
+            "Build Jetendard from a supported ligature-enabled Nerd Font Mono "
             "and Pretendard Korean glyphs."
         )
     )
     parser.add_argument(
+        "--latin-family",
+        choices=tuple(LATIN_SOURCES),
+        default="jetbrainsmono",
+        help="Latin source family (default: jetbrainsmono).",
+    )
+    parser.add_argument(
         "--latin-dir",
-        default="upstream/jetbrainsmono",
-        help="Directory containing JetBrainsMonoNerdFontMono TTF files.",
+        default=None,
+        help="Source TTF directory (default: upstream/<latin-family>).",
     )
     parser.add_argument(
         "--cjk-dir",
@@ -81,8 +86,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--family-name",
-        default="Jetendard",
-        help="Generated font family name.",
+        default=None,
+        help="Generated font family name (default: Jetendard or Jetendard Cove).",
     )
     parser.add_argument(
         "--korean-scale",
@@ -96,12 +101,24 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--korean-scale-x",
+        type=float,
+        default=None,
+        help="Independent Korean/CJK horizontal scale (overrides --korean-scale on this axis).",
+    )
+    parser.add_argument(
+        "--korean-scale-y",
+        type=float,
+        default=None,
+        help="Independent Korean/CJK vertical scale (overrides --korean-scale on this axis).",
+    )
+    parser.add_argument(
         "--weights",
         nargs="+",
         default=None,
         help=(
             "Weights to generate. With no --styles, this builds upright variants only. "
-            f"Supported: {', '.join(SUPPORTED_WEIGHTS)}."
+            "Available weights depend on --latin-family."
         ),
     )
     parser.add_argument(
@@ -123,7 +140,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--all",
         action="store_true",
-        help="Build the full 16-variant Jetendard coverage matrix.",
+        help="Build all supported variants of the selected Latin family.",
     )
     parser.add_argument(
         "--korean-italic-mode",
@@ -170,6 +187,7 @@ def validate_styles(styles: list[str]) -> list[str]:
 
 def select_variants(
     *,
+    latin_family: str = "jetbrainsmono",
     all_variants: bool = False,
     variant_names: list[str] | None = None,
     weights: list[str] | None = None,
@@ -183,15 +201,30 @@ def select_variants(
         msg = "--variants cannot be combined with --weights or --styles"
         raise ValueError(msg)
 
+    available = get_source_variants(latin_family)
     if all_variants or (variant_names is None and weights is None and styles is None):
-        return list(DEFAULT_VARIANTS)
+        return available
 
     if variant_names:
-        return get_variants_by_names(variant_names)
+        by_name = {variant.output_suffix: variant for variant in available}
+        unsupported = [name for name in variant_names if name not in by_name]
+        if unsupported:
+            msg = (
+                f"Unsupported variant(s) for {latin_family}: {', '.join(unsupported)}. "
+                f"Supported: {', '.join(by_name)}"
+            )
+            raise ValueError(msg)
+        return [by_name[name] for name in dedupe_preserving_order(variant_names)]
 
-    selected_weights = validate_weights(weights if weights is not None else list(DEFAULT_WEIGHTS))
+    selected_weights = dedupe_preserving_order(
+        weights if weights is not None else list(LATIN_SOURCES[latin_family].weights)
+    )
     selected_styles = validate_styles(styles if styles is not None else ["normal"])
-    return get_variants_by_weights_and_styles(selected_weights, selected_styles)
+    return [
+        make_font_variant(weight, style, latin_family=latin_family)
+        for weight in selected_weights
+        for style in selected_styles
+    ]
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -203,6 +236,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         variants = select_variants(
+            latin_family=args.latin_family,
             all_variants=args.all,
             variant_names=args.variants,
             weights=args.weights,
@@ -211,7 +245,8 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         parser.error(str(exc))
 
-    latin_dir = Path(args.latin_dir)
+    latin_dir = Path(args.latin_dir or f"upstream/{args.latin_family}")
+    family_name = args.family_name or LATIN_SOURCES[args.latin_family].family_name
     cjk_dir = Path(args.cjk_dir)
     base_output_dir = Path(args.output_dir)
     ttf_dir = base_output_dir / "ttf"
@@ -222,7 +257,7 @@ def main(argv: list[str] | None = None) -> int:
     otf_dir.mkdir(parents=True, exist_ok=True)
     web_dir.mkdir(parents=True, exist_ok=True)
 
-    stem = family_file_stem(args.family_name)
+    stem = family_file_stem(family_name)
     logger.info(
         "Starting Jetendard build for variants: %s",
         ", ".join(variant.output_suffix for variant in variants),
@@ -237,7 +272,7 @@ def main(argv: list[str] | None = None) -> int:
 
         if not latin_path.exists():
             logger.error("Latin font file not found: %s", latin_path)
-            logger.error("Run `make download` to fetch JetBrainsMonoNerdFontMono files.")
+            logger.error("Run `make download LATIN_FAMILY=%s` to fetch fonts.", args.latin_family)
             return 1
         if not cjk_path.exists():
             logger.error("CJK font file not found: %s", cjk_path)
@@ -249,9 +284,11 @@ def main(argv: list[str] | None = None) -> int:
                 latin_path=latin_path,
                 cjk_path=cjk_path,
                 output_path=output_path_ttf,
-                family_name=args.family_name,
+                family_name=family_name,
                 subfamily_name=variant.subfamily_name,
                 korean_scale=args.korean_scale,
+                korean_scale_x=args.korean_scale_x,
+                korean_scale_y=args.korean_scale_y,
                 typographic_subfamily_name=variant.typographic_subfamily_name,
                 is_italic=variant.is_italic,
                 css_weight=variant.css_weight,
@@ -280,7 +317,7 @@ def main(argv: list[str] | None = None) -> int:
             logger.exception("Failed to build variant %s", variant.output_suffix)
             return 1
 
-    write_css(web_dir, args.family_name, variants)
+    write_css(web_dir, family_name, variants)
     logger.info("All requested Jetendard variants built successfully")
     return 0
 
